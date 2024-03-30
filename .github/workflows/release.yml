@@ -48,18 +48,21 @@ jobs:
               "draft": false,
               "prerelease": false
             }')
-            echo "::set-output name=upload_url::$(echo $RESPONSE | jq -r .upload_url | sed 's/{?name,label}//')"
+
+            # Write UPLOAD_URL to the GITHUB_ENV
+            # This makes it directly accessible in the next step.
+          UPLOAD_URL=$(echo $RESPONSE | jq -r .upload_url | sed 's/{?name,label}//')
+          echo "UPLOAD_URL=${UPLOAD_URL}" >> $GITHUB_ENV
 
       - name: Upload Release Asset
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          UPLOAD_URL="${{ steps.create_release.outputs.upload_url }}"
           ASSET_PATH="./dist/index.js"
 
           # Perform the upload
           curl -X POST \
-            -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+            -H "Authorization: token $GITHUB_TOKEN" \
             -H "Content-Type: application/javascript" \
             -H "Accept: application/vnd.github.v3+json" \
             --data-binary @"${ASSET_PATH}" \
