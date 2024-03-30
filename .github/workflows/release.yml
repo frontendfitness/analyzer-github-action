@@ -1,3 +1,5 @@
+# On push to main, release a new version of the action using the version in package.json
+
 name: Release Action
 
 on:
@@ -46,7 +48,6 @@ jobs:
               "draft": false,
               "prerelease": false
             }')
-            # Output the uploaded url
             echo "::set-output name=upload_url::$(echo $RESPONSE | jq -r .upload_url | sed 's/{?name,label}//')"
 
       - name: Upload Release Asset
