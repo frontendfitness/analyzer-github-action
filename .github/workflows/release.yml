@@ -75,3 +75,11 @@ jobs:
             -H "Accept: application/vnd.github.v3+json" \
             --data-binary @"${ASSET_PATH}" \
             "${UPLOAD_URL}?name=index.js"
+
+      - name: Notify Slack
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL_DEPLOYMENT_ALERTS }}
+        run: |
+          curl -X POST -H 'Content-type: application/json' \
+          --data '{"text":"Tracker Github Action release completed by '${{ github.actor }}' on branch '${{ github.ref_name }}'."}' \
+          $SLACK_WEBHOOK_URL
