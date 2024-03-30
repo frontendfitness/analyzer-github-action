@@ -40,8 +40,8 @@ jobs:
         run: |
           # Construct the release payload
           PAYLOAD=$(jq -n \
-          --arg tag_name "$VERSION" \
-          --arg name "Release $VERSION" \
+          --arg tag_name "v$VERSION" \
+          --arg name "Release v$VERSION" \
           '{
             tag_name: $tag_name,
             name: $name,
