@@ -31,15 +31,20 @@ jobs:
         shell: bash
 
       - name: Create Release
-        id: create_release
-        uses: actions/create-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          tag_name: ${{ steps.version.outputs.version }}
-          release_name: Release ${{ steps.version.outputs.version }}
-          draft: false
-          prerelease: false
+        run: |
+          curl \
+            -X POST \
+            -H "Authorization: token $GITHUB_TOKEN" \
+            -H "Accept: application/vnd.github.v3+json" \
+            https://api.github.com/repos/${{ github.repository }}/releases \
+            -d '{
+              "tag_name": "${{ steps.version.outputs.version  }}",
+              "name": "Release ${{ steps.version.outputs.version  }}",
+              "draft": false,
+              "prerelease": false
+            }'
 
       - name: Upload index.js
         uses: actions/upload-release-asset@v1
