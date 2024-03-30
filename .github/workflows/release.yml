@@ -31,10 +31,11 @@ jobs:
         shell: bash
 
       - name: Create Release
+        id: create_release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          curl \
+          RESPONSE=$(curl \
             -X POST \
             -H "Authorization: token $GITHUB_TOKEN" \
             -H "Accept: application/vnd.github.v3+json" \
@@ -44,14 +45,21 @@ jobs:
               "name": "Release ${{ steps.version.outputs.version  }}",
               "draft": false,
               "prerelease": false
-            }'
+            }')
+            # Output the uploaded url
+            echo "::set-output name=upload_url::$(echo $RESPONSE | jq -r .upload_url | sed 's/{?name,label}//')"
 
-      - name: Upload index.js
-        uses: actions/upload-release-asset@v1
+      - name: Upload Release Asset
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./dist/index.js
-          asset_name: index.js
-          asset_content_type: application/javascript
+        run: |
+          UPLOAD_URL="${{ steps.create_release.outputs.upload_url }}"
+          ASSET_PATH="./dist/index.js"
+
+          # Perform the upload
+          curl -X POST \
+            -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+            -H "Content-Type: application/javascript" \
+            -H "Accept: application/vnd.github.v3+json" \
+            --data-binary @"${ASSET_PATH}" \
+            "${UPLOAD_URL}?name=index.js"
