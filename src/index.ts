@@ -7,7 +7,7 @@ async function run() {
     await exec.exec('npm run lint')
 
     // Run ESLint
-    console.log('tracker index: ran ESLint success')
+    console.log('tracker index: ran ESLint successfully')
   } catch (error) {
     console.log('An error occured', (error as Error).message)
     core.setFailed(`ESLint check failed: ${error}`)
