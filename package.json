@@ -1,5 +1,5 @@
 {
-  "version": "0.2.3-alpha",
+  "version": "0.2.4-alpha",
   "scripts": {
     "build": "ncc build src/index.ts -o dist"
   },

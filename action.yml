@@ -1,5 +1,5 @@
 name: 'FrontendFitness check'
 description: 'Runs the configured FrontendFitness analysis on your project.'
 runs:
-  using: 'node18'
+  using: 'node20'
   main: 'dist/index.js'
