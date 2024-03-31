@@ -25960,19 +25960,16 @@ var __importStar = (this && this.__importStar) || function (mod) {
     __setModuleDefault(result, mod);
     return result;
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 const core = __importStar(__nccwpck_require__(2186));
-const exec_1 = __importDefault(__nccwpck_require__(1514));
+const exec = __importStar(__nccwpck_require__(1514));
 async function run() {
     try {
         console.log('tracker index: running npm install');
-        await exec_1.default.exec('npm install eslint');
+        await exec.exec('npm install eslint');
         // Run ESLint
         console.log('tracker index: running ESLint');
-        await exec_1.default.exec('npx eslint .');
+        await exec.exec('npx eslint .');
         console.log('tracker index: ran ESLint success');
     }
     catch (error) {
