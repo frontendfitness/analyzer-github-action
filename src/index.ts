@@ -4,11 +4,9 @@ import * as exec from '@actions/exec'
 async function run() {
   try {
     console.log('tracker index: running npm install')
-    await exec.exec('npm install eslint')
+    await exec.exec('npm run lint')
 
     // Run ESLint
-    console.log('tracker index: running ESLint')
-    await exec.exec('npx eslint .')
     console.log('tracker index: ran ESLint success')
   } catch (error) {
     console.log('An error occured', (error as Error).message)
