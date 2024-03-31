@@ -1,3 +1,0 @@
-{
-  "src/**/*": ["npm run build", "git add dist/"]
-}
