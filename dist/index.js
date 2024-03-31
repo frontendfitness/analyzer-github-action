@@ -25960,10 +25960,36 @@ var __importStar = (this && this.__importStar) || function (mod) {
     __setModuleDefault(result, mod);
     return result;
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 const core = __importStar(__nccwpck_require__(2186));
 const exec = __importStar(__nccwpck_require__(1514));
+const crypto_1 = __importDefault(__nccwpck_require__(6113));
+const signPayload = (payload, secret) => crypto_1.default.createHmac('sha256', secret).update(payload).digest('hex');
+// Make the API request with the signature in the headers
+const sendSignedRequest = async (apiUrl, payload, secret) => {
+    const payloadString = JSON.stringify(payload);
+    const signature = signPayload(payloadString, secret);
+    const response = await fetch(apiUrl, {
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json', 'X-Signature': signature },
+        body: payloadString,
+    });
+    if (!response.ok) {
+        console.log('response failed', response.statusText);
+        throw new Error(`API request failed: ${response.statusText}`);
+    }
+    return response.json();
+};
 async function run() {
+    const apiUrl = 'https://analyzer-api.myylow.workers.dev/analyzer/config';
+    const apiSecret = core.getInput('12345');
+    const payload = { timestamp: new Date().toISOString() };
+    console.log('making signed request', apiSecret, payload);
+    const response = await sendSignedRequest(apiUrl, payload, apiSecret);
+    console.log('Signed request success', response);
     try {
         console.log('Analyzer index: running the lint script');
         await exec.exec('npm run lint');
@@ -25975,7 +26001,6 @@ async function run() {
         core.setFailed(`ESLint check failed: ${error}`);
     }
 }
-console.log('FF quality Analyzer index');
 run();
 
 
