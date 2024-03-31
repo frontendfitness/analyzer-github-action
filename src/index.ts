@@ -15,7 +15,7 @@ const sendSignedRequest = async (
   const signature = signPayload(payloadString, secret)
 
   const response = await fetch(apiUrl, {
-    method: 'GET',
+    method: 'POST',
     headers: { 'Content-Type': 'application/json', 'X-Signature': signature },
     body: payloadString,
   })
