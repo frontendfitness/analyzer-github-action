@@ -3,7 +3,7 @@ import * as exec from '@actions/exec'
 
 async function run() {
   try {
-    console.log('tracker index: running lint script.')
+    console.log('tracker index: running lint script')
     await exec.exec('npm run lint')
 
     // Run ESLint
