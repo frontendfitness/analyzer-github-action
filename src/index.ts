@@ -1,5 +1,7 @@
 import * as core from '@actions/core'
 import * as exec from '@actions/exec'
+import * as github from '@actions/github'
+
 import { sendSignedPostRequest, sendUnsignedPostRequest } from './apiClient'
 
 async function run() {
