@@ -25985,7 +25985,7 @@ exports.sendSignedPostRequest = sendSignedPostRequest;
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.API_CONFIG_URL = exports.API_HOST = void 0;
-exports.API_HOST = 'https://analyzer-api.myylow.workers.dev';
+exports.API_HOST = 'https://analyzer-api.frontendfitness.workers.dev';
 exports.API_CONFIG_URL = `${exports.API_HOST}/analyzer/config`;
 
 
