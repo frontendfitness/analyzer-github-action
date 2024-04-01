@@ -3,3 +3,8 @@ description: 'Runs the configured FrontendFitness analysis on your project.'
 runs:
   using: 'node20'
   main: 'dist/index.js'
+
+inputs:
+  apiToken:
+    description: 'This is used to authenticate the requests between the repository and the Frontend Fitness API.'
+    required: true

@@ -25932,6 +25932,65 @@ exports["default"] = _default;
 
 /***/ }),
 
+/***/ 1166:
+/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
+
+"use strict";
+
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.sendSignedPostRequest = exports.sendUnsignedPostRequest = void 0;
+const crypto_1 = __importDefault(__nccwpck_require__(6113));
+const config_1 = __nccwpck_require__(6373);
+const signPayload = (payload, secret) => crypto_1.default.createHmac('sha256', secret).update(payload).digest('hex');
+const handleResponse = (response) => {
+    if (!response.ok) {
+        throw new Error(`API request failed: ${response.statusText}`);
+    }
+    return response.json();
+};
+const sendUnsignedPostRequest = async (payload) => {
+    console.log('making unsigned request', payload);
+    const payloadString = JSON.stringify(payload);
+    const response = await fetch(config_1.API_CONFIG_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: payloadString,
+    });
+    return handleResponse(response);
+};
+exports.sendUnsignedPostRequest = sendUnsignedPostRequest;
+const sendSignedPostRequest = async (payload, secret) => {
+    console.log('making signed request', secret, payload);
+    const payloadString = JSON.stringify(payload);
+    const signature = signPayload(payloadString, secret);
+    const response = await fetch(config_1.API_CONFIG_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'X-Signature': signature },
+        body: payloadString,
+    });
+    return handleResponse(response);
+};
+exports.sendSignedPostRequest = sendSignedPostRequest;
+
+
+/***/ }),
+
+/***/ 6373:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.API_CONFIG_URL = exports.API_HOST = void 0;
+exports.API_HOST = 'https://analyzer-api.myylow.workers.dev';
+exports.API_CONFIG_URL = `${exports.API_HOST}/analyzer/config`;
+
+
+/***/ }),
+
 /***/ 6144:
 /***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
 
@@ -25960,36 +26019,17 @@ var __importStar = (this && this.__importStar) || function (mod) {
     __setModuleDefault(result, mod);
     return result;
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 const core = __importStar(__nccwpck_require__(2186));
 const exec = __importStar(__nccwpck_require__(1514));
-const crypto_1 = __importDefault(__nccwpck_require__(6113));
-const signPayload = (payload, secret) => crypto_1.default.createHmac('sha256', secret).update(payload).digest('hex');
-// Make the API request with the signature in the headers
-const sendSignedRequest = async (apiUrl, payload, secret) => {
-    const payloadString = JSON.stringify(payload);
-    const signature = signPayload(payloadString, secret);
-    const response = await fetch(apiUrl, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'X-Signature': signature },
-        body: payloadString,
-    });
-    if (!response.ok) {
-        console.log('response failed', response.statusText);
-        throw new Error(`API request failed: ${response.statusText}`);
-    }
-    return response.json();
-};
+const apiClient_1 = __nccwpck_require__(1166);
 async function run() {
-    const apiUrl = 'https://analyzer-api.myylow.workers.dev/analyzer/config';
-    const apiSecret = core.getInput('12345');
+    const apiSecret = core.getInput('apiSecret');
     const payload = { timestamp: new Date().toISOString() };
-    console.log('making signed request', apiSecret, payload);
-    const response = await sendSignedRequest(apiUrl, payload, apiSecret);
-    console.log('Signed request success', response);
+    const response = apiSecret
+        ? await (0, apiClient_1.sendSignedPostRequest)(payload, apiSecret)
+        : await (0, apiClient_1.sendUnsignedPostRequest)(payload);
+    console.log('request success', response);
     try {
         console.log('Analyzer index: running the lint script');
         await exec.exec('npm run lint');
