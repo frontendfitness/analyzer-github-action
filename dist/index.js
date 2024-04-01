@@ -25962,10 +25962,10 @@ const sendUnsignedPostRequest = async (payload) => {
     return handleResponse(response);
 };
 exports.sendUnsignedPostRequest = sendUnsignedPostRequest;
-const sendSignedPostRequest = async (payload, secret) => {
-    console.log('making signed request', secret, payload);
+const sendSignedPostRequest = async (payload, apiToken) => {
+    console.log('making signed request', apiToken, payload);
     const payloadString = JSON.stringify(payload);
-    const signature = signPayload(payloadString, secret);
+    const signature = signPayload(payloadString, apiToken);
     const response = await fetch(config_1.API_CONFIG_URL, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'X-Signature': signature },
@@ -26024,10 +26024,10 @@ const core = __importStar(__nccwpck_require__(2186));
 const exec = __importStar(__nccwpck_require__(1514));
 const apiClient_1 = __nccwpck_require__(1166);
 async function run() {
-    const apiSecret = core.getInput('apiSecret');
+    const apiToken = core.getInput('apiToken', { required: true });
     const payload = { timestamp: new Date().toISOString() };
-    const response = apiSecret
-        ? await (0, apiClient_1.sendSignedPostRequest)(payload, apiSecret)
+    const response = apiToken
+        ? await (0, apiClient_1.sendSignedPostRequest)(payload, apiToken)
         : await (0, apiClient_1.sendUnsignedPostRequest)(payload);
     console.log('request success', response);
     try {

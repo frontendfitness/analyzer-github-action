@@ -3,11 +3,11 @@ import * as exec from '@actions/exec'
 import { sendSignedPostRequest, sendUnsignedPostRequest } from './apiClient'
 
 async function run() {
-  const apiSecret = core.getInput('apiSecret')
+  const apiToken = core.getInput('apiToken', { required: true })
   const payload = { timestamp: new Date().toISOString() }
 
-  const response = apiSecret
-    ? await sendSignedPostRequest(payload, apiSecret)
+  const response = apiToken
+    ? await sendSignedPostRequest(payload, apiToken)
     : await sendUnsignedPostRequest(payload)
 
   console.log('request success', response)

@@ -25,12 +25,12 @@ export const sendUnsignedPostRequest = async (payload: unknown) => {
 }
 export const sendSignedPostRequest = async (
   payload: unknown,
-  secret: string
+  apiToken: string
 ) => {
-  console.log('making signed request', secret, payload)
+  console.log('making signed request', apiToken, payload)
 
   const payloadString = JSON.stringify(payload)
-  const signature = signPayload(payloadString, secret)
+  const signature = signPayload(payloadString, apiToken)
 
   const response = await fetch(API_CONFIG_URL, {
     method: 'POST',
