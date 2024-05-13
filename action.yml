@@ -1,10 +1,10 @@
-name: 'FrontendFitness check'
-description: 'Runs the configured FrontendFitness analysis on your project.'
+name: 'Incremental check'
+description: 'Runs the configured Incremental analysis on your project.'
 runs:
   using: 'node20'
   main: 'dist/index.js'
 
 inputs:
   apiToken:
-    description: 'This is used to authenticate the requests between the repository and the Frontend Fitness API.'
+    description: 'This is used to authenticate the requests between the repository and the Incremental API.'
     required: true
